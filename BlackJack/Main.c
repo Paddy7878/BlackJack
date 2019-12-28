@@ -6,10 +6,12 @@
 
 
 void shuffle(game);
+void deal(game, player);
 
 #define DECKSIZE 52
 #define NCARDS 13
 #define PASSES 8192
+#define PLAYERS 4
 
 typedef struct
 {
@@ -19,15 +21,21 @@ typedef struct
 	int d[];
 }game;
 
+typedef struct
+{
+	int h[5];
+}player;
+
 
 void main()
 {
 	int option;
 	int shuf;
 	game *g = malloc(sizeof(g));
+	//player *p = malloc(sizeof(p));
+	player players[3];
 
 	srand(time(NULL));
-
 	printf("============================================\n");
 	printf("=           WELCOME TO BLACKJACK           =\n");
 	printf("============================================\n");
@@ -55,23 +63,24 @@ void main()
 		for (int i = 0; i < DECKSIZE * g->nd; ++i)
 		{
 			g->d[i] = (i % NCARDS) + 2;
-			printf("%d ", g->d[i]);
+			/*printf("%d ", g->d[i]);
 			if (g->d[i] == 14) {
 				printf("\n");
-			}
+			}*/
 		}
 
 		shuffle(g);
-		do {
+		deal(g, players);
+
+		/*do {
 			printf("\n\nShuffle Again Yes or No(0 or 1): ");
 			scanf("%d", &shuf);
 
 			if (shuf == 0) {
 				shuffle(g);
 			}
-		} while (shuf != 1);
+		} while (shuf != 1);*/
 
-		printf("\n\nDeck Shuffled");
 	}
 	else // Load Game
 	{
@@ -88,13 +97,10 @@ void shuffle(game *g)
 	int tmp;
 	int n = PASSES;
 
-	printf("\n\n");
-
-
 	while (n--)
 	{
-		i = rand() % (DECKSIZE);
-		j = rand() % (DECKSIZE);
+		i = rand() % (DECKSIZE * g->nd);
+		j = rand() % (DECKSIZE * g->nd);
 
 		tmp = g->d[i];
 		g->d[i] = g->d[j];
@@ -102,13 +108,34 @@ void shuffle(game *g)
 	}
 
 	j = 1;
-	for (i = 0; i < DECKSIZE; ++i)
+	for (i = 0; i < DECKSIZE * g->nd; ++i)
 	{
 		++j;
-		printf("%2d ", g->d[i]);
+		/*printf("%2d ", g->d[i]);
 		if (j % 14 == 0) {
 			printf("\n");
 			j = 1;
+		}*/
+	}
+}
+
+void deal(game *g, player players[])
+{
+	int card = 0;
+    players[3];
+	for (int j = 0; j < 2; j++)
+	{
+		for (int i = 0; i < g->np; i++)
+		{
+			players[i].h[j] = g->d[card];
+			g->d[card] = 0;
+			card++;
 		}
+	}
+
+	printf("\nDealer got %d and %d\n", players[0].h[0], players[0].h[1]);
+	for (int i = 1; i < g->np; i++)
+	{
+		printf("\nPlayer %d got %d and %d\n", i, players[i].h[0], players[i].h[1]);
 	}
 }
