@@ -7,6 +7,11 @@
 
 void shuffle(game);
 void deal(game, player);
+int getFace(int card);
+int getSuit(int card);
+int createCard(int face, int suit);
+void printCard(int card);
+void delay(int numSeconds);
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -32,7 +37,6 @@ void main()
 	int option;
 	int shuf;
 	game *g = malloc(sizeof(g));
-	//player *p = malloc(sizeof(p));
 	player players[3];
 
 	srand(time(NULL));
@@ -60,16 +64,31 @@ void main()
 			printf("\n");
 		} while (g->nd < 1 || g->nd > 4);
 
-		for (int i = 0; i < DECKSIZE * g->nd; ++i)
+		printf("Starting new game.");
+		for (int i = 0; i < 3; ++i)
 		{
-			g->d[i] = (i % NCARDS) + 2;
+			delay(1);
+			printf(".");
+		}
+
+		for (int i = 0; i <= DECKSIZE * g->nd; ++i)
+		{
+			g->d[i] = i;
 			/*printf("%d ", g->d[i]);
 			if (g->d[i] == 14) {
 				printf("\n");
 			}*/
 		}
 
+		printf("\n\nDealer shuffles the deck");
+		for (int i = 0; i < 3; ++i)
+		{
+			delay(1);
+			printf(".");
+		}
 		shuffle(g);
+		delay(1);
+		printf("\n\nDealer deals the cards to the players");
 		deal(g, players);
 
 		/*do {
@@ -133,9 +152,49 @@ void deal(game *g, player players[])
 		}
 	}
 
-	printf("\nDealer got %d and %d\n", players[0].h[0], players[0].h[1]);
-	for (int i = 1; i < g->np; i++)
-	{
-		printf("\nPlayer %d got %d and %d\n", i, players[i].h[0], players[i].h[1]);
-	}
+	delay(1);
+	printf("\n\nThe Dealer gets the hole card and places it face down\n");
+	delay(2);
+	printf("\nThe Dealers face up card is the");
+	printCard(players[0].h[1]);
+
+}
+
+
+
+int getFace(int card)
+{
+	return card % 13;
+}
+
+int getSuit(int card)
+{
+	return card / 13;
+}
+
+int createCard(int face, int suit)
+{
+	return face * suit;
+}
+
+void printCard(int card)
+{
+	static char *suits[4] = { "Spades", "Hearts", "Diamonds", "Clubs" };
+	static char *faces[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10",
+							"Jack", "Queen", "King", "Ace" };
+
+	printf(" %s of %s", faces[getFace(card)], suits[getSuit(card)]);
+}
+
+void delay(int numSeconds)
+{
+	// Converting time into milli_seconds 
+	int milliSeconds = 1000 * numSeconds;
+
+	// Storing start time 
+	clock_t startTime = clock();
+
+	// looping till required time is not achieved 
+	while (clock() < startTime + milliSeconds)
+		;
 }
