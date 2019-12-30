@@ -2,8 +2,6 @@
 #include<conio.h>
 #include<time.h>
 #include<stdlib.h>
-//#include<libgen.h>
-
 
 void shuffle(game);
 void deal(game, player);
@@ -74,10 +72,6 @@ void main()
 		for (int i = 0; i <= DECKSIZE * g->nd; ++i)
 		{
 			g->d[i] = i;
-			/*printf("%d ", g->d[i]);
-			if (g->d[i] == 14) {
-				printf("\n");
-			}*/
 		}
 
 		printf("\n\nDealer shuffles the deck");
@@ -90,16 +84,6 @@ void main()
 		delay(1);
 		printf("\n\nDealer deals the cards to the players");
 		deal(g, players);
-
-		/*do {
-			printf("\n\nShuffle Again Yes or No(0 or 1): ");
-			scanf("%d", &shuf);
-
-			if (shuf == 0) {
-				shuffle(g);
-			}
-		} while (shuf != 1);*/
-
 	}
 	else // Load Game
 	{
@@ -130,11 +114,6 @@ void shuffle(game *g)
 	for (i = 0; i < DECKSIZE * g->nd; ++i)
 	{
 		++j;
-		/*printf("%2d ", g->d[i]);
-		if (j % 14 == 0) {
-			printf("\n");
-			j = 1;
-		}*/
 	}
 }
 
@@ -157,10 +136,7 @@ void deal(game *g, player players[])
 	delay(2);
 	printf("\nThe Dealers face up card is the");
 	printCard(players[0].h[1]);
-
 }
-
-
 
 int getFace(int card)
 {
@@ -195,6 +171,5 @@ void delay(int numSeconds)
 	clock_t startTime = clock();
 
 	// looping till required time is not achieved 
-	while (clock() < startTime + milliSeconds)
-		;
+	while (clock() < startTime + milliSeconds);
 }
