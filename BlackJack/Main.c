@@ -10,6 +10,9 @@ int getSuit(int card);
 int createCard(int face, int suit);
 void printCard(int card);
 void delay(int numSeconds);
+void playGame(game, player);
+int calculatePoints(player, int j);
+void hitMe(player);
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -27,6 +30,7 @@ typedef struct
 typedef struct
 {
 	int h[5];
+	int points;
 }player;
 
 
@@ -83,7 +87,25 @@ void main()
 		shuffle(g);
 		delay(1);
 		printf("\n\nDealer deals the cards to the players");
+		for (int i = 0; i < 3; ++i)
+		{
+			delay(1);
+			printf(".");
+		}
 		deal(g, players);
+		delay(1);
+		printf("\n\nThe Dealer gets the hole card and places it face down\n");
+		delay(1);
+		printf("\nThe Dealers face up card is the");
+		printCard(players[0].h[1]);
+		for (int i = 1; i < g->np; i++)
+		{
+			delay(2);
+			printf("\n\nPlayer %d gets their cards");
+		}
+
+		playGame(g, players);
+
 	}
 	else // Load Game
 	{
@@ -130,12 +152,6 @@ void deal(game *g, player players[])
 			card++;
 		}
 	}
-
-	delay(1);
-	printf("\n\nThe Dealer gets the hole card and places it face down\n");
-	delay(2);
-	printf("\nThe Dealers face up card is the");
-	printCard(players[0].h[1]);
 }
 
 int getFace(int card)
@@ -172,4 +188,60 @@ void delay(int numSeconds)
 
 	// looping till required time is not achieved 
 	while (clock() < startTime + milliSeconds);
+}
+
+void playGame(game *g, player players[])
+{
+	int points = 0;
+	int option;
+
+	for (int j = 0; j < 4; j++)
+	{
+		calculatePoints(players, j);
+	}
+
+
+	for (int i = 1; i < g->np; i++)
+	{
+		do
+		{
+			delay(1);
+			printf("\n\nPlayer %d's go", i);
+			printf("\n1. Stand");
+			printf("\n2. Hit");
+			printf("\n3. Split");
+			scanf("%d", &option);
+
+			switch (option)
+			{
+				case 2:
+					hitMe(players[4]);
+					break;
+			}
+		} while (option == 2);
+	}
+}
+
+void hitMe(player players)
+{
+
+}
+
+int calculatePoints(player players[], int p)
+{
+	int points;
+	int face;
+	
+	
+	for (int i = 0; i < 5; i++)
+	{
+		face = getFace(players[p].h[i]);
+		printf("");
+		switch (face)
+		{
+
+		}
+	}
+
+	return points;
 }
