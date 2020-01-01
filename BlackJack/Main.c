@@ -11,7 +11,7 @@ int createCard(int face, int suit);
 void printCard(int card);
 void delay(int numSeconds);
 void playGame(game, player);
-int calculatePoints(player, int j);
+int calculatePoints(player);
 void hitMe(player);
 
 #define DECKSIZE 52
@@ -98,11 +98,6 @@ void main()
 		delay(1);
 		printf("\nThe Dealers face up card is the");
 		printCard(players[0].h[1]);
-		for (int i = 1; i < g->np; i++)
-		{
-			delay(2);
-			printf("\n\nPlayer %d gets their cards");
-		}
 
 		playGame(g, players);
 
@@ -195,10 +190,27 @@ void playGame(game *g, player players[])
 	int points = 0;
 	int option;
 
-	for (int j = 0; j < 4; j++)
+	for (int j = 0; j < g->np; j++)
 	{
-		calculatePoints(players, j);
+		players[j].points = calculatePoints(players, j);
 	}
+
+	for (int i = 1; i < g->np; i++)
+	{
+		printf("\nPlayer %d got the", i);
+		for (int j = 0; j < 2; j++)
+		{
+			printCard(players[i].h[j]);
+			if (j == 0) {
+				printf(" and the");
+			}
+		}
+	}
+
+	printf("\n\nThe Dealers points are %d", players[0].points);
+	printf("\nPlayer 1's points are %d", players[1].points);
+	printf("\nPlayer 2's points are %d", players[2].points);
+	printf("\nPlayer 3's points are %d", players[3].points);
 
 
 	for (int i = 1; i < g->np; i++)
@@ -212,11 +224,9 @@ void playGame(game *g, player players[])
 			printf("\n3. Split");
 			scanf("%d", &option);
 
-			switch (option)
+			if(option == 2)
 			{
-				case 2:
-					hitMe(players[4]);
-					break;
+				hitMe(players[]);
 			}
 		} while (option == 2);
 	}
@@ -227,21 +237,60 @@ void hitMe(player players)
 
 }
 
-int calculatePoints(player players[], int p)
+int calculatePoints(player players[], int j)
 {
-	int points;
+	int points = 0;
+	int pointTotal = 0;
 	int face;
 	
 	
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		face = getFace(players[p].h[i]);
-		printf("");
+		face = getFace(players[j].h[i]);
 		switch (face)
 		{
-
+			case 0:
+				points = 2;
+				break;
+			case 1:
+				points = 3;
+				break;
+			case 2:
+				points = 4;
+				break;
+			case 3:
+				points = 5;
+				break;
+			case 4:
+				points = 6;
+				break;
+			case 5:
+				points = 7;
+				break;
+			case 6:
+				points = 8;
+				break;
+			case 7:
+				points = 9;
+				break;
+			case 8:
+				points = 10;
+				break;
+			case 9:
+				points = 10;
+				break;
+			case 10:
+				points = 10;
+				break;
+			case 11:
+				points = 10;
+				break;
+			case 12:
+				points = 11;
+				break;
 		}
+		pointTotal += points;
 	}
 
-	return points;
+	return pointTotal;
 }

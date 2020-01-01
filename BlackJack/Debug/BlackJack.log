@@ -1,10 +1,30 @@
 ﻿  Main.c
-c:\projects\blackjack\blackjack\main.c(40): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\projects\blackjack\blackjack\main.c(49): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(44): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\projects\blackjack\blackjack\main.c(53): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(56): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(60): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(61): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(65): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(36): warning C4101: 'shuf': unreferenced local variable
-  BlackJack.vcxproj -> C:\Projects\BlackJack\Debug\BlackJack.exe
+c:\projects\blackjack\blackjack\main.c(40): warning C4101: 'shuf': unreferenced local variable
+c:\projects\blackjack\blackjack\main.c(195): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(203): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(203): error C2198: 'printCard': too few arguments for call
+c:\projects\blackjack\blackjack\main.c(210): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(210): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\projects\blackjack\blackjack\main.c(210): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+  c:\projects\blackjack\blackjack\main.c(210): note: the missing variadic argument 1 is required by format string '%d'
+c:\projects\blackjack\blackjack\main.c(211): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(211): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\projects\blackjack\blackjack\main.c(211): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+  c:\projects\blackjack\blackjack\main.c(211): note: the missing variadic argument 1 is required by format string '%d'
+c:\projects\blackjack\blackjack\main.c(212): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(212): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\projects\blackjack\blackjack\main.c(212): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+  c:\projects\blackjack\blackjack\main.c(212): note: the missing variadic argument 1 is required by format string '%d'
+c:\projects\blackjack\blackjack\main.c(213): error C2088: '[': illegal for struct
+c:\projects\blackjack\blackjack\main.c(213): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\projects\blackjack\blackjack\main.c(213): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+  c:\projects\blackjack\blackjack\main.c(213): note: the missing variadic argument 1 is required by format string '%d'
+c:\projects\blackjack\blackjack\main.c(225): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
