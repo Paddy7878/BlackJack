@@ -15,6 +15,8 @@ void playGame(game, player);
 int calculatePoints(player);
 void hitMe(game, player);
 int getPoint(int card);
+void checkForBlackJack(game, player);
+void winners(game, player);
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -34,6 +36,7 @@ typedef struct
 	int h[5];
 	int points;
 	int cardNo;
+	int b;
 }player;
 
 
@@ -92,7 +95,7 @@ void main()
 		printf("\n\nDealer deals the cards to the players");
 		for (int i = 0; i < 3; ++i)
 		{
-			delay(1);
+			//delay(1);
 			printf(".");
 		}
 		deal(g, players);
@@ -102,6 +105,7 @@ void main()
 		printf("\nThe Dealers face up card is the");
 		printCard(players[0].h[1]);
 		printf("\n");
+
 		if (getPoint(players[0].h[1]) == 10 || getPoint(players[0].h[1]) == 11)
 		{
 			printf("\nDealer peeks at his facedown card");
@@ -119,14 +123,12 @@ void main()
 		}
 
 		playGame(g, players);
-
 	}
 	else // Load Game
 	{
 		
 	}
-
-	_getch();
+	getch();
 }
 
 void shuffle(game *g)
@@ -204,7 +206,6 @@ void delay(int numSeconds)
 	while (clock() < startTime + milliSeconds);
 }
 
-
 void playGame(game *g, player players[])
 {
 	int option;
@@ -245,11 +246,28 @@ void playGame(game *g, player players[])
 			printf("\n3. Split\n");
 			scanf("%d", &option);
 
-			if(option == 2)
+			if (option == 1) // stand
+			{
+				printf("You choose to Stand.");
+				break;
+			}
+			else if(option == 2) // hit
 			{
 				hitMe(g, players);
+				if (players[i].points > 21)
+				{
+					break;
+				}
 			}
 		} while (option == 2);
+	}
+	g->t = 0;
+	printf("\n\nThe Dealers hole card was the");
+	printCard(players[0].h[0]);
+	printf("\n");
+	while (players[0].points <= 21)
+	{
+		hitMe(g, players);
 	}
 }
 
@@ -272,6 +290,7 @@ void hitMe(game *g, player players[])
 	printf("\nYou got the");
 	printCard(nextCard);
 	printf("\nYou are now on %d points", players[g->t].points);
+	checkForBlackJack(g, players);
 }
 
 int calculatePoints(player players[], int j)
@@ -386,4 +405,39 @@ int getPoint(int card)
 	}
 
 	return points;
+}
+
+void checkForBlackJack(game *g, player players[])
+{
+	if (players[g->t].points == 21)
+	{
+		printf("\n\nPlayer %d got BlackJack!", g->t);
+	}
+	else if (players[g->t].points > 21)
+	{
+		if (g->t == 0)
+		{
+			printf("\n\nDealer goes Bust!\n");
+			players[g->t].b = 1;
+		}
+		else {
+			printf("\n\nPlayer %d goes Bust!\n", g->t);
+			players[g->t].b = 1;
+		}
+	}
+	winners(g, players);
+}
+
+void winners(game *g, player players[])
+{
+	if (players[0].b == 1)
+	{
+		for (int i = 1; i < g->np; i++)
+		{
+			if (players[i].b != 1)
+			{
+				printf("\nPlayer %d wins with %d points!", i, players[i].points);
+			}
+		}
+	}
 }
