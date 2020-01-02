@@ -10,9 +10,11 @@ int getSuit(int card);
 int createCard(int face, int suit);
 void printCard(int card);
 void delay(int numSeconds);
+void hitMe(game, player);
 void playGame(game, player);
 int calculatePoints(player);
-void hitMe(player);
+void hitMe(game, player);
+int getPoint(int card);
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -31,6 +33,7 @@ typedef struct
 {
 	int h[5];
 	int points;
+	int cardNo;
 }player;
 
 
@@ -69,7 +72,7 @@ void main()
 		printf("Starting new game.");
 		for (int i = 0; i < 3; ++i)
 		{
-			delay(1);
+			//delay(1);
 			printf(".");
 		}
 
@@ -81,11 +84,11 @@ void main()
 		printf("\n\nDealer shuffles the deck");
 		for (int i = 0; i < 3; ++i)
 		{
-			delay(1);
+			//delay(1);
 			printf(".");
 		}
 		shuffle(g);
-		delay(1);
+		//delay(1);
 		printf("\n\nDealer deals the cards to the players");
 		for (int i = 0; i < 3; ++i)
 		{
@@ -93,9 +96,9 @@ void main()
 			printf(".");
 		}
 		deal(g, players);
-		delay(1);
+		//delay(1);
 		printf("\n\nThe Dealer gets the hole card and places it face down\n");
-		delay(1);
+		//delay(1);
 		printf("\nThe Dealers face up card is the");
 		printCard(players[0].h[1]);
 
@@ -185,13 +188,14 @@ void delay(int numSeconds)
 	while (clock() < startTime + milliSeconds);
 }
 
+
 void playGame(game *g, player players[])
 {
-	int points = 0;
 	int option;
 
 	for (int j = 0; j < g->np; j++)
 	{
+		players[j].cardNo = 2;
 		players[j].points = calculatePoints(players, j);
 	}
 
@@ -217,24 +221,41 @@ void playGame(game *g, player players[])
 	{
 		do
 		{
+			g->t = i;
 			delay(1);
 			printf("\n\nPlayer %d's go", i);
 			printf("\n1. Stand");
 			printf("\n2. Hit");
-			printf("\n3. Split");
+			printf("\n3. Split\n");
 			scanf("%d", &option);
 
 			if(option == 2)
 			{
-				hitMe(players[]);
+				hitMe(g, players);
 			}
 		} while (option == 2);
 	}
 }
 
-void hitMe(player players)
+void hitMe(game *g, player players[])
 {
+	int nextCard, j = 4;
+	int cardNo = players[g->t].cardNo;
+	do
+	{
+		nextCard = g->d[j];
+		g->d[j] = 0;
+		j++;
+	} while (nextCard == 0);
 
+	players[g->t].h[cardNo] = nextCard;
+	players[g->t].cardNo++;
+
+	players[g->t].points += getPoint(nextCard);
+
+	printf("\nYou got the");
+	printCard(nextCard);
+	printf("\nYou are now on %d points", players[g->t].points);
 }
 
 int calculatePoints(player players[], int j)
@@ -293,4 +314,60 @@ int calculatePoints(player players[], int j)
 	}
 
 	return pointTotal;
+}
+
+int getPoint(int card)
+{
+	int points = 0;
+	int face;
+
+
+	for (int i = 0; i < 2; i++)
+	{
+		face = getFace(card);
+		switch (face)
+		{
+		case 0:
+			points = 2;
+			break;
+		case 1:
+			points = 3;
+			break;
+		case 2:
+			points = 4;
+			break;
+		case 3:
+			points = 5;
+			break;
+		case 4:
+			points = 6;
+			break;
+		case 5:
+			points = 7;
+			break;
+		case 6:
+			points = 8;
+			break;
+		case 7:
+			points = 9;
+			break;
+		case 8:
+			points = 10;
+			break;
+		case 9:
+			points = 10;
+			break;
+		case 10:
+			points = 10;
+			break;
+		case 11:
+			points = 10;
+			break;
+		case 12:
+			points = 11;
+			break;
+		}
+	}
+
+	return points;
 }
