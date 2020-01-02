@@ -101,6 +101,22 @@ void main()
 		//delay(1);
 		printf("\nThe Dealers face up card is the");
 		printCard(players[0].h[1]);
+		printf("\n");
+		if (getPoint(players[0].h[1]) == 10 || getPoint(players[0].h[1]) == 11)
+		{
+			printf("\nDealer peeks at his facedown card");
+			if (calculatePoints(players, 0) == 21)
+			{
+				printf("\n\nDealer has a BlackJack!");
+				printf("\nDealer wins with a");
+				printCard(players[0].h[0]);
+				printf(" and a");
+				printCard(players[0].h[1]);
+			}
+			else {
+				printf("\nDealer doesn't have a BlackJack!\n");
+			}
+		}
 
 		playGame(g, players);
 
