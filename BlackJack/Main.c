@@ -265,10 +265,11 @@ void playGame(game *g, player players[])
 	printf("\n\nThe Dealers hole card was the");
 	printCard(players[0].h[0]);
 	printf("\n");
-	while (players[0].points <= 21)
+	while (players[0].points <= 16)
 	{
 		hitMe(g, players);
 	}
+	winners(g, players);
 }
 
 void hitMe(game *g, player players[])
@@ -411,7 +412,13 @@ void checkForBlackJack(game *g, player players[])
 {
 	if (players[g->t].points == 21)
 	{
-		printf("\n\nPlayer %d got BlackJack!", g->t);
+		if (g->t == 0)
+		{
+			printf("\n\Dealer got BlackJack!");
+		}
+		else {
+			printf("\n\nPlayer %d got BlackJack!", g->t);
+		}
 	}
 	else if (players[g->t].points > 21)
 	{
@@ -425,11 +432,14 @@ void checkForBlackJack(game *g, player players[])
 			players[g->t].b = 1;
 		}
 	}
-	winners(g, players);
 }
 
 void winners(game *g, player players[])
 {
+	int points;
+	int highestPoints;
+	int winner;
+
 	if (players[0].b == 1)
 	{
 		for (int i = 1; i < g->np; i++)
@@ -438,6 +448,44 @@ void winners(game *g, player players[])
 			{
 				printf("\nPlayer %d wins with %d points!", i, players[i].points);
 			}
+		}
+	}
+	else if (players[0].b != 1)
+	{
+		points = players[0].points;
+		highestPoints = points;
+		winner = 0;
+
+		for (int i = 1; i < g->np; i++)
+		{
+			if (players[i].b != 1)
+			{
+				points = players[i].points;
+				if (points > highestPoints)
+				{
+					highestPoints = points;
+					winner = i;
+				}
+			}
+		}
+
+		for (int i = 1; i < 8; i++)
+		{
+			if (players[i].points == highestPoints && i != winner)
+			{
+				if (players[i].cardNo > players[winner].cardNo)
+				{
+					winner = i;
+				}
+			}
+		}
+
+		if (winner == 0)
+		{
+			printf("\n\nThe Dealer won this round with %d points", players[winner].points);
+		}
+		else {
+			printf("\n\nThe Winner of this round is Player %d with %d points using %d cards", winner, players[winner].points, players[winner].cardNo);
 		}
 	}
 }
