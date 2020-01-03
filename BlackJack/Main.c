@@ -17,6 +17,7 @@ void hitMe(game, player);
 int getPoint(int card);
 void checkForBlackJack(game, player);
 void winners(game, player);
+void clear(game);
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -583,4 +584,10 @@ void winners(game *g, player players[])
 	{
 		printf("\n\nExiting Game...");
 	}
+}
+
+void clear(game *g)
+{
+	free(g->d);
+	free(g);
 }
