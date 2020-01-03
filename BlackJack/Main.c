@@ -3,6 +3,7 @@
 #include<time.h>
 #include<stdlib.h>
 
+FILE *fptr;
 void shuffle(game);
 void deal(game, player);
 int getFace(int card);
@@ -18,6 +19,8 @@ int getPoint(int card);
 void checkForBlackJack(game, player);
 void winners(game, player);
 void clear(game);
+void saveGame(game, player);
+
 
 #define DECKSIZE 52
 #define NCARDS 13
@@ -225,6 +228,7 @@ void playGame(game *g, player players[])
 	{
 		players[j].cardNo = 2;
 		players[j].ace = 0;
+		players[j].b = 0;
 		players[j].points = calculatePoints(players, j);
 	}
 
@@ -275,7 +279,9 @@ void playGame(game *g, player players[])
 				}
 			} while (option == 2);
 		}
+		
 		g->t = 0;
+		saveGame(g, players);
 		printf("\n\nThe Dealers hole card was the");
 		printCard(players[0].h[0]);
 		printf("\n");
@@ -283,6 +289,7 @@ void playGame(game *g, player players[])
 		{
 			hitMe(g, players);
 		}
+		
 	}
 	winners(g, players);
 }
@@ -590,4 +597,31 @@ void clear(game *g)
 {
 	free(g->d);
 	free(g);
+}
+
+void saveGame(game *g, player players[])
+{
+	fptr = fopen("save.txt", "w");
+
+	if (fptr == NULL)
+	{
+		printf("Error opening file!\n");
+	}
+	else
+	{
+		fprintf(fptr, "%d %d %d %d\n", g->nd, g->np, g->r, g->t);
+		for (int i = 0; i < DECKSIZE * g->nd; i++)
+		{
+			fprintf(fptr, "%d ", g->d[i]);
+		}
+		for (int j = 0; j < g->np; j++)
+		{
+			fprintf(fptr, "\n%d %d %d %d %d\n", players[j].points, players[j].cardNo, players[j].w, players[j].b, players[j].ace);
+			for (int i = 0; i < players[j].cardNo; i++)
+			{
+				fprintf(fptr, "%d ", players[j].h[i]);
+			}
+		}
+		fclose(fptr);
+	}
 }
