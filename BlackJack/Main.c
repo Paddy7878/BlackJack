@@ -20,6 +20,7 @@ void checkForBlackJack(game, player);
 void winners(game, player);
 void clear(game);
 void saveGame(game, player);
+void loadGame(game, player);
 
 
 #define DECKSIZE 52
@@ -96,7 +97,7 @@ void main()
 	}
 	else // Load Game
 	{
-		
+		loadGame(g, players);
 	}
 	getch();
 }
@@ -185,9 +186,12 @@ void playGame(game *g, player players[])
 		printf("\n\nRound %d", g->r);
 	}
 
-	for (int i = 0; i <= DECKSIZE * g->nd; ++i)
+	if (g->t == 0)
 	{
-		g->d[i] = i;
+		for (int i = 0; i <= DECKSIZE * g->nd; ++i)
+		{
+			g->d[i] = i;
+		}
 	}
 
 	printf("\n\nDealer shuffles the deck");
@@ -624,4 +628,30 @@ void saveGame(game *g, player players[])
 		}
 		fclose(fptr);
 	}
+}
+
+void loadGame(game *g, player players[])
+{
+	fptr = fopen("save.txt", "r");
+
+	if (fptr == NULL) {
+		printf("\nError opening file!\n");
+	}
+	else {
+		fscanf(fptr, "%d %d %d %d", &g->nd, &g->np, &g->r, &g->t);
+		for (int i = 0; i < DECKSIZE * g->nd; i++)
+		{
+			fscanf(fptr, "%d ", &g->d[i]);
+		}
+		for (int j = 0; j < g->np; j++)
+		{
+			fscanf(fptr, "%d %d %d %d %d", &players[j].points, &players[j].cardNo, &players[j].w, &players[j].b, &players[j].ace);
+			for (int i = 0; i < players[j].cardNo; i++)
+			{
+				fscanf(fptr, "%d ", &players[j].h[i]);
+			}
+		}
+	}
+	fclose(fptr);
+	playGame(g, players);
 }
