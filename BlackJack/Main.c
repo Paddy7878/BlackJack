@@ -22,7 +22,6 @@ void clear(game);
 void saveGame(game, player);
 void loadGame(game, player);
 
-
 #define DECKSIZE 52
 #define NCARDS 13
 #define PASSES 8192
@@ -46,7 +45,6 @@ typedef struct
 	int b;
 	int ace;
 }player;
-
 
 void main()
 {
@@ -293,7 +291,6 @@ void playGame(game *g, player players[])
 		{
 			hitMe(g, players);
 		}
-		
 	}
 	winners(g, players);
 }
@@ -336,7 +333,6 @@ int calculatePoints(player players[], int j)
 	int points = 0;
 	int pointTotal = 0;
 	int face;
-	
 	
 	for (int i = 0; i < 2; i++)
 	{
@@ -386,7 +382,6 @@ int calculatePoints(player players[], int j)
 		}
 		pointTotal += points;
 	}
-
 	return pointTotal;
 }
 
@@ -394,7 +389,6 @@ int getPoint(int card)
 {
 	int points = 0;
 	int face;
-
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -442,7 +436,6 @@ int getPoint(int card)
 			break;
 		}
 	}
-
 	return points;
 }
 
@@ -462,34 +455,13 @@ void checkForBlackJack(game *g, player players[])
 	{
 		if (g->t == 0)
 		{
-			/*for (int i = 0; i < players[0].cardNo; i++)
-			{
-				if (getFace(players[0].h[i]) == 12)
-				{
-					players[0].points -= 10;
-				}
-			}*/
-			if (players[0].points > 21)
-			{
 				printf("\n\nDealer goes Bust!\n");
 				players[g->t].b = 1;
-			}
 		}
 		else {
-			/*for (int i = 0; i < players[0].cardNo; i++)
-			{
-				if (getFace(players[0].h[i]) == 12)
-				{
-					players[0].points -= 10;
-				}
-			}*/
-			if (players[g->t].points > 21)
-			{
 				printf("\n\nPlayer %d goes Bust!\n", g->t);
 				players[g->t].b = 1;
-			}
-		}
-		
+		}	
 	}
 }
 
