@@ -1,15 +1,17 @@
 ﻿  Main.c
-c:\projects\blackjack\blackjack\main.c(50): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\projects\blackjack\blackjack\main.c(59): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(53): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\projects\blackjack\blackjack\main.c(62): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(66): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(69): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(71): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(74): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(131): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+c:\projects\blackjack\blackjack\main.c(97): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\conio.h(453): note: see declaration of 'getch'
-c:\projects\blackjack\blackjack\main.c(46): warning C4101: 'shuf': unreferenced local variable
-c:\projects\blackjack\blackjack\main.c(247): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\projects\blackjack\blackjack\main.c(49): warning C4101: 'shuf': unreferenced local variable
+c:\projects\blackjack\blackjack\main.c(260): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
-c:\projects\blackjack\blackjack\main.c(417): warning C4129: 'D': unrecognized character escape sequence
+c:\projects\blackjack\blackjack\main.c(443): warning C4129: 'D': unrecognized character escape sequence
+c:\projects\blackjack\blackjack\main.c(574): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1274): note: see declaration of 'scanf'
   BlackJack.vcxproj -> C:\Projects\BlackJack\Debug\BlackJack.exe

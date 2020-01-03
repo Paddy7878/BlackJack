@@ -28,6 +28,7 @@ typedef struct
 	int t;
 	int np;
 	int nd;
+	int r;
 	int d[];
 }game;
 
@@ -36,7 +37,9 @@ typedef struct
 	int h[5];
 	int points;
 	int cardNo;
+	int w;
 	int b;
+	int ace;
 }player;
 
 
@@ -72,6 +75,11 @@ void main()
 			printf("\n");
 		} while (g->nd < 1 || g->nd > 4);
 
+		for (int i = 0; i < g->np; i++)
+		{
+			players[i].w = 0;
+		}
+
 		printf("Starting new game.");
 		for (int i = 0; i < 3; ++i)
 		{
@@ -79,49 +87,7 @@ void main()
 			printf(".");
 		}
 
-		for (int i = 0; i <= DECKSIZE * g->nd; ++i)
-		{
-			g->d[i] = i;
-		}
-
-		printf("\n\nDealer shuffles the deck");
-		for (int i = 0; i < 3; ++i)
-		{
-			//delay(1);
-			printf(".");
-		}
-		shuffle(g);
-		//delay(1);
-		printf("\n\nDealer deals the cards to the players");
-		for (int i = 0; i < 3; ++i)
-		{
-			//delay(1);
-			printf(".");
-		}
-		deal(g, players);
-		//delay(1);
-		printf("\n\nThe Dealer gets the hole card and places it face down\n");
-		//delay(1);
-		printf("\nThe Dealers face up card is the");
-		printCard(players[0].h[1]);
-		printf("\n");
-
-		if (getPoint(players[0].h[1]) == 10 || getPoint(players[0].h[1]) == 11)
-		{
-			printf("\nDealer peeks at his facedown card");
-			if (calculatePoints(players, 0) == 21)
-			{
-				printf("\n\nDealer has a BlackJack!");
-				printf("\nDealer wins with a");
-				printCard(players[0].h[0]);
-				printf(" and a");
-				printCard(players[0].h[1]);
-			}
-			else {
-				printf("\nDealer doesn't have a BlackJack!\n");
-			}
-		}
-
+		g->r = 1;
 		playGame(g, players);
 	}
 	else // Load Game
@@ -210,9 +176,54 @@ void playGame(game *g, player players[])
 {
 	int option;
 
+	if (g->r > 0)
+	{
+		printf("\n\nRound %d", g->r);
+	}
+
+	for (int i = 0; i <= DECKSIZE * g->nd; ++i)
+	{
+		g->d[i] = i;
+	}
+
+	printf("\n\nDealer shuffles the deck");
+	for (int i = 0; i < 3; ++i)
+	{
+		//delay(1);
+		printf(".");
+	}
+	shuffle(g);
+	//delay(1);
+	printf("\n\nDealer deals the cards to the players");
+	for (int i = 0; i < 3; ++i)
+	{
+		//delay(1);
+		printf(".");
+	}
+	deal(g, players);
+	//delay(1);
+	printf("\n\nThe Dealer gets the hole card and places it face down\n");
+	//delay(1);
+	printf("\nThe Dealers face up card is the");
+	printCard(players[0].h[1]);
+	printf("\n");
+
+	if (getPoint(players[0].h[1]) == 10 || getPoint(players[0].h[1]) == 11)
+	{
+		printf("\nDealer peeks at his facedown card");
+		if (calculatePoints(players, 0) == 21)
+		{
+			printf("\n\nDealer has a BlackJack!");
+		}
+		else {
+			printf("\nDealer doesn't have a BlackJack!\n");
+		}
+	}
+
 	for (int j = 0; j < g->np; j++)
 	{
 		players[j].cardNo = 2;
+		players[j].ace = 0;
 		players[j].points = calculatePoints(players, j);
 	}
 
@@ -233,41 +244,44 @@ void playGame(game *g, player players[])
 	printf("\nPlayer 2's points are %d", players[2].points);
 	printf("\nPlayer 3's points are %d", players[3].points);
 
-
-	for (int i = 1; i < g->np; i++)
+	if (players[0].points != 21)
 	{
-		do
+		for (int i = 1; i < g->np; i++)
 		{
-			g->t = i;
-			delay(1);
-			printf("\n\nPlayer %d's go", i);
-			printf("\n1. Stand");
-			printf("\n2. Hit");
-			printf("\n3. Split\n");
-			scanf("%d", &option);
+			do
+			{
+				g->t = i;
+				delay(1);
+				printf("\n\nPlayer %d's go", i);
+				printf("\n1. Stand");
+				printf("\n2. Hit");
+				printf("\n3. Split");
+				printf("\nOption: ");
+				scanf("%d", &option);
 
-			if (option == 1) // stand
-			{
-				printf("You choose to Stand.");
-				break;
-			}
-			else if(option == 2) // hit
-			{
-				hitMe(g, players);
-				if (players[i].points > 21)
+				if (option == 1) // stand
 				{
+					printf("You choose to Stand.");
 					break;
 				}
-			}
-		} while (option == 2);
-	}
-	g->t = 0;
-	printf("\n\nThe Dealers hole card was the");
-	printCard(players[0].h[0]);
-	printf("\n");
-	while (players[0].points <= 16)
-	{
-		hitMe(g, players);
+				else if (option == 2) // hit
+				{
+					hitMe(g, players);
+					if (players[i].points > 21)
+					{
+						break;
+					}
+				}
+			} while (option == 2);
+		}
+		g->t = 0;
+		printf("\n\nThe Dealers hole card was the");
+		printCard(players[0].h[0]);
+		printf("\n");
+		while (players[0].points <= 16)
+		{
+			hitMe(g, players);
+		}
 	}
 	winners(g, players);
 }
@@ -287,10 +301,21 @@ void hitMe(game *g, player players[])
 	players[g->t].cardNo++;
 
 	players[g->t].points += getPoint(nextCard);
-
+	if (getPoint(nextCard) == 11)
+	{
+		players[g->t].ace = 1;
+	}
 	printf("\nYou got the");
 	printCard(nextCard);
-	printf("\nYou are now on %d points", players[g->t].points);
+	if (players[g->t].ace == 1)
+	{
+		players[g->t].points -= 10;
+		printf("\nYou choose to use your Ace as 1, you are now on %d points", players[g->t].points);
+		players[g->t].ace = 0;
+	}
+	else {
+		printf("\nYou are now on %d points", players[g->t].points);
+	}
 	checkForBlackJack(g, players);
 }
 
@@ -344,6 +369,7 @@ int calculatePoints(player players[], int j)
 				break;
 			case 12:
 				points = 11;
+				players[j].ace = 1;
 				break;
 		}
 		pointTotal += points;
@@ -424,13 +450,34 @@ void checkForBlackJack(game *g, player players[])
 	{
 		if (g->t == 0)
 		{
-			printf("\n\nDealer goes Bust!\n");
-			players[g->t].b = 1;
+			/*for (int i = 0; i < players[0].cardNo; i++)
+			{
+				if (getFace(players[0].h[i]) == 12)
+				{
+					players[0].points -= 10;
+				}
+			}*/
+			if (players[0].points > 21)
+			{
+				printf("\n\nDealer goes Bust!\n");
+				players[g->t].b = 1;
+			}
 		}
 		else {
-			printf("\n\nPlayer %d goes Bust!\n", g->t);
-			players[g->t].b = 1;
+			/*for (int i = 0; i < players[0].cardNo; i++)
+			{
+				if (getFace(players[0].h[i]) == 12)
+				{
+					players[0].points -= 10;
+				}
+			}*/
+			if (players[g->t].points > 21)
+			{
+				printf("\n\nPlayer %d goes Bust!\n", g->t);
+				players[g->t].b = 1;
+			}
 		}
+		
 	}
 }
 
@@ -439,6 +486,32 @@ void winners(game *g, player players[])
 	int points;
 	int highestPoints;
 	int winner;
+	int choice;
+	int bjCount = 0;
+
+	if (players[0].points == 21)
+	{
+		for (int i = 1; i <= g->np; i++)
+		{
+			if (players[i].points == 21)
+			{
+				printf("\nPlayer %d also has a BlackJack", i);
+				bjCount++;
+			}
+		}
+		if (bjCount > 0)
+		{
+			printf("\nDealer draws with %d player", bjCount);
+		}
+		else
+		{
+			printf("\nDealer wins with a");
+			printCard(players[0].h[0]);
+			printf(" and a");
+			printCard(players[0].h[1]);
+			printf("\n");
+		}
+	}
 
 	if (players[0].b == 1)
 	{
@@ -483,9 +556,31 @@ void winners(game *g, player players[])
 		if (winner == 0)
 		{
 			printf("\n\nThe Dealer won this round with %d points", players[winner].points);
+			g->r++;
+			players[0].w++;
 		}
 		else {
-			printf("\n\nThe Winner of this round is Player %d with %d points using %d cards", winner, players[winner].points, players[winner].cardNo);
+			printf("\n\nThe Winner of round %d is Player %d with %d points using %d cards", g->r, winner, players[winner].points, players[winner].cardNo);
+			g->r++;
+			players[winner].w++;
 		}
+	}
+	do
+	{
+		printf("\n\nWould you like to play another round?");
+		printf("\n1. Yes");
+		printf("\n2. No");
+		printf("\nOption: ");
+		scanf("%d", &choice);
+	} while (choice != 1 && choice != 2);
+
+	if (choice == 1)
+	{
+		playGame(g, players);
+		g->r++;
+	}
+	else
+	{
+		printf("\n\nExiting Game...");
 	}
 }
