@@ -6,7 +6,7 @@ typedef struct game
 	int np;
 	int nd;
 	int r;
-	int d[206];
+	int d[210];
 }Game;
 
 typedef struct

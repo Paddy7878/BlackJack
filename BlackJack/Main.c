@@ -6,7 +6,6 @@
 
 #include"blackjack.h"
 
-
 void init(Game *g, player players[]);
 void shuffle(Game *g);
 void deal(Game *g, player players[]);
@@ -20,22 +19,22 @@ void playGame(Game *g, player players[]);
 int calculatePoints(Game *g, player players[], int j);
 void hitMe(Game *g, player players[]);
 int getPoint(Game *g, int point);
-void saveGame(Game *g, player players[]);
 void checkForBlackJack(Game *g, player players[]);
 void winners(Game *g, player players[]);
-void saveGame(Game *g, player players[]);
+void save(Game *g, player players[]);
 void loadGame(Game *g, player players[]);
 
 #define DECKSIZE 52
 #define NCARDS 13
 #define PASSES 8192
 #define PLAYERS 4
+#define SAVEFILE "save.txt"
 
 int main(int argc,
 		char *argv[])
 {
 	int option;
-	Game *g = malloc(sizeof(g) * 5);
+	Game *g = malloc(sizeof(g));
 	player players[4];
 	srand(time(NULL));
 
@@ -60,6 +59,8 @@ int main(int argc,
 
 	playGame(g, players);
 	
+	free(g);
+
 	return EXIT_SUCCESS;
 }
 
@@ -91,7 +92,6 @@ void init(Game *g, player players[])
 
 	g->r = 1;
 	g->t = 0;
-
 }
 
 void shuffle(Game *g)
@@ -99,7 +99,7 @@ void shuffle(Game *g)
 	int i;
 	int j;
 	int tmp;
-	int n = PASSES;
+	int n = 200;
 
 	while (n--)
 	{
@@ -109,12 +109,6 @@ void shuffle(Game *g)
 		tmp = g->d[i];
 		g->d[i] = g->d[j];
 		g->d[j] = tmp;
-	}
-
-	j = 1;
-	for (i = 0; i < DECKSIZE * g->nd; ++i)
-	{
-		++j;
 	}
 }
 
@@ -171,20 +165,20 @@ void delay(int numSeconds)
 
 void playGame(Game *g, player players[])
 {
-
 	int option;
+
+	if (g->t == 0)
+	{
+		for (int i = 0; i < DECKSIZE * g->nd; ++i)
+		{
+			g->d[i] = i;
+		}
+	}
+
 
 	if (g->r > 0)
 	{
 		printf("\n\nRound %d", g->r);
-	}
-
-	if (g->t == 0)
-	{
-		for (int i = 1; i <= DECKSIZE * g->nd; ++i)
-		{
-			g->d[i] = i;
-		}
 	}
 
 	printf("\n\nDealer shuffles the deck");
@@ -278,7 +272,7 @@ void playGame(Game *g, player players[])
 				}
 				else if (option == 4)
 				{
-					saveGame(g, players);
+					save(g, players);
 				}
 			} while (option == 2);
 		}
@@ -592,19 +586,11 @@ void winners(Game *g, player players[])
 	else
 	{
 		printf("\n\Saving Game...");
-		saveGame(g, players);
-		//exit(0);
-
+		save(g, players);
 	}
 }
 
-/*void clear(Game g)
-{
-	free(g.d);
-	free(g);
-}*/
-
-void saveGame(Game *g, player players[])
+void save(Game *g, player players[])
 {
 	FILE *fptr;
 
