@@ -2,58 +2,43 @@
 #include<conio.h>
 #include<time.h>
 #include<stdlib.h>
+#include<string.h>
 
-FILE *fptr;
-void shuffle(game);
-void deal(game, player);
-int getFace(int card);
-int getSuit(int card);
+#include"blackjack.h"
+
+
+void init(Game *g, player players[]);
+void shuffle(Game *g);
+void deal(Game *g, player players[]);
+int getFace(Game *g, int card);
+int getSuit(Game *g, int card);
 int createCard(int face, int suit);
-void printCard(int card);
+void printCard(Game *g, int card);
 void delay(int numSeconds);
-void hitMe(game, player);
-void playGame(game, player);
-int calculatePoints(player);
-void hitMe(game, player);
-int getPoint(int card);
-void checkForBlackJack(game, player);
-void winners(game, player);
-void clear(game);
-void saveGame(game, player);
-void loadGame(game, player);
+void hitMe(Game *g, player players[]);
+void playGame(Game *g, player players[]);
+int calculatePoints(Game *g, player players[], int j);
+void hitMe(Game *g, player players[]);
+int getPoint(Game *g, int point);
+void saveGame(Game *g, player players[]);
+void checkForBlackJack(Game *g, player players[]);
+void winners(Game *g, player players[]);
+void saveGame(Game *g, player players[]);
+void loadGame(Game *g, player players[]);
 
 #define DECKSIZE 52
 #define NCARDS 13
 #define PASSES 8192
 #define PLAYERS 4
 
-typedef struct
-{
-	int t;
-	int np;
-	int nd;
-	int r;
-	int d[];
-}game;
-
-typedef struct
-{
-	int h[5];
-	int points;
-	int cardNo;
-	int w;
-	int b;
-	int ace;
-}player;
-
-void main()
+int main(int argc,
+		char *argv[])
 {
 	int option;
-	int shuf;
-	game *g = malloc(sizeof(g));
-	player players[3];
-
+	Game *g = malloc(sizeof(g) * 5);
+	player players[4];
 	srand(time(NULL));
+
 	printf("============================================\n");
 	printf("=           WELCOME TO BLACKJACK           =\n");
 	printf("============================================\n");
@@ -65,42 +50,51 @@ void main()
 		scanf("%d", &option);
 	} while (option != 1 && option != 2);
 
-	if (option == 1) // New Game
+	if (option == 1)
 	{
-		do {
-			printf("\nEnter number of players (2-4)? ");
-			scanf("%d", &g->np);
-		} while (g->np < 2 || g->np > 4);
-
-		do {
-			printf("\nPlayer 1, enter number of decks: ");
-			scanf("%d", &g->nd);
-			printf("\n");
-		} while (g->nd < 1 || g->nd > 4);
-
-		for (int i = 0; i < g->np; i++)
-		{
-			players[i].w = 0;
-		}
-
-		printf("Starting new game.");
-		for (int i = 0; i < 3; ++i)
-		{
-			//delay(1);
-			printf(".");
-		}
-
-		g->r = 1;
-		playGame(g, players);
+		init(g, players);
 	}
-	else // Load Game
-	{
+	else {
 		loadGame(g, players);
 	}
-	getch();
+
+	playGame(g, players);
+	
+	return EXIT_SUCCESS;
 }
 
-void shuffle(game *g)
+void init(Game *g, player players[])
+{
+
+	do {
+		printf("\nEnter number of players (2-4)? ");
+		scanf("%d", &g->np);
+	} while (g->np < 2 || g->np > 4);
+
+	do {
+		printf("\nPlayer 1, enter number of decks: ");
+		scanf("%d", &g->nd);
+		printf("\n");
+	} while (g->nd < 1 || g->nd > 4);
+
+	for (int i = 0; i < g->np; i++)
+	{
+		players[i].w = 0;
+	}
+
+	printf("Starting new game.");
+	for (int i = 0; i < 3; ++i)
+	{
+		//delay(1);
+		printf(".");
+	}
+
+	g->r = 1;
+	g->t = 0;
+
+}
+
+void shuffle(Game *g)
 {
 	int i;
 	int j;
@@ -124,7 +118,7 @@ void shuffle(game *g)
 	}
 }
 
-void deal(game *g, player players[])
+void deal(Game *g, player players[])
 {
 	int card = 0;
     players[3];
@@ -139,14 +133,14 @@ void deal(game *g, player players[])
 	}
 }
 
-int getFace(int card)
+int getFace(Game *g, int card)
 {
-	return card % 13;
+	return card % NCARDS;
 }
 
-int getSuit(int card)
+int getSuit(Game *g, int card)
 {
-	return card / 13;
+	return card / (NCARDS * g->nd);
 }
 
 int createCard(int face, int suit)
@@ -154,13 +148,13 @@ int createCard(int face, int suit)
 	return face * suit;
 }
 
-void printCard(int card)
+void printCard(Game *g, int card)
 {
 	static char *suits[4] = { "Spades", "Hearts", "Diamonds", "Clubs" };
 	static char *faces[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10",
 							"Jack", "Queen", "King", "Ace" };
 
-	printf(" %s of %s", faces[getFace(card)], suits[getSuit(card)]);
+	printf("%s of %s\n", faces[getFace(g, card)], suits[getSuit(g, card)]);
 }
 
 void delay(int numSeconds)
@@ -175,8 +169,9 @@ void delay(int numSeconds)
 	while (clock() < startTime + milliSeconds);
 }
 
-void playGame(game *g, player players[])
+void playGame(Game *g, player players[])
 {
+
 	int option;
 
 	if (g->r > 0)
@@ -186,7 +181,7 @@ void playGame(game *g, player players[])
 
 	if (g->t == 0)
 	{
-		for (int i = 0; i <= DECKSIZE * g->nd; ++i)
+		for (int i = 1; i <= DECKSIZE * g->nd; ++i)
 		{
 			g->d[i] = i;
 		}
@@ -208,18 +203,17 @@ void playGame(game *g, player players[])
 	}
 	deal(g, players);
 	//delay(1);
-	printf("\n\nThe Dealer gets the hole card and places it face down\n");
+	printf("\n\nThe Dealer gets the hole card and places it face down");
 	//delay(1);
-	printf("\nThe Dealers face up card is the");
-	printCard(players[0].h[1]);
-	printf("\n");
+	printf("\nThe Dealers face up card is the ");
+	printCard(g, players[0].h[1]);
 
-	if (getPoint(players[0].h[1]) == 10 || getPoint(players[0].h[1]) == 11)
+	if (getPoint(g, players[0].h[1]) == 10 || getPoint(g, players[0].h[1]) == 11)
 	{
 		printf("\nDealer peeks at his facedown card");
-		if (calculatePoints(players, 0) == 21)
+		if (calculatePoints(g, players, 0) == 21)
 		{
-			printf("\n\nDealer has a BlackJack!");
+			printf("\nDealer has a BlackJack!");
 		}
 		else {
 			printf("\nDealer doesn't have a BlackJack!\n");
@@ -231,25 +225,8 @@ void playGame(game *g, player players[])
 		players[j].cardNo = 2;
 		players[j].ace = 0;
 		players[j].b = 0;
-		players[j].points = calculatePoints(players, j);
+		players[j].points = calculatePoints(g, players, j);
 	}
-
-	for (int i = 1; i < g->np; i++)
-	{
-		printf("\nPlayer %d got the", i);
-		for (int j = 0; j < 2; j++)
-		{
-			printCard(players[i].h[j]);
-			if (j == 0) {
-				printf(" and the");
-			}
-		}
-	}
-
-	printf("\n\nThe Dealers points are %d", players[0].points);
-	printf("\nPlayer 1's points are %d", players[1].points);
-	printf("\nPlayer 2's points are %d", players[2].points);
-	printf("\nPlayer 3's points are %d", players[3].points);
 
 	if (players[0].points != 21)
 	{
@@ -259,16 +236,32 @@ void playGame(game *g, player players[])
 			{
 				g->t = i;
 				delay(1);
-				printf("\n\nPlayer %d's go", i);
+				printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n============================================\n");
+				printf("=             Player %d's go                =\n", i);
+				printf("============================================\n");
+				printf("     Points");
+				printf("                    Cards\n       %2d", players[g->t].points);
+				for (int i = 0; i < players[g->t].cardNo; i++)
+				{
+					if (i == 0) {
+						printf("                   ");
+					}
+					else {
+						printf("                            ");
+					}
+					printCard(g, players[g->t].h[i]);
+				}
+
 				printf("\n1. Stand");
 				printf("\n2. Hit");
 				printf("\n3. Split");
+				printf("\n4. Save and Exit");
 				printf("\nOption: ");
 				scanf("%d", &option);
 
 				if (option == 1) // stand
 				{
-					printf("You choose to Stand.");
+					printf("\nYou choose to Stand.");
 					break;
 				}
 				else if (option == 2) // hit
@@ -279,23 +272,47 @@ void playGame(game *g, player players[])
 						break;
 					}
 				}
+				else if (option == 3)
+				{
+
+				}
+				else if (option == 4)
+				{
+					saveGame(g, players);
+				}
 			} while (option == 2);
 		}
 		
 		g->t = 0;
-		saveGame(g, players);
-		printf("\n\nThe Dealers hole card was the");
-		printCard(players[0].h[0]);
-		printf("\n");
+		printf("\n\n\n\n\n============================================\n");
+		printf("=                  Dealer                  =\n");
+		printf("============================================\n");
+		printf("\nThe Dealers hole card was the ");
+		printCard(g, players[0].h[0]);
+		if (players[0].points <= 16)
+		{
+			printf("\nDealer is only on %d points", players[0].points);
+		}
 		while (players[0].points <= 16)
 		{
+			if (players[0].cardNo == 2)
+			{
+				printf("\nDealer choses to get hit!\n");
+			}
+			else {
+				printf("\nDealer choses to get hit again!\n");
+			}
 			hitMe(g, players);
+		}
+		if (g->t == 0)
+		{
+			printf("\nDealer is now on %d points", players[0].points);
 		}
 	}
 	winners(g, players);
 }
 
-void hitMe(game *g, player players[])
+void hitMe(Game *g, player players[])
 {
 	int nextCard, j = 4;
 	int cardNo = players[g->t].cardNo;
@@ -309,26 +326,31 @@ void hitMe(game *g, player players[])
 	players[g->t].h[cardNo] = nextCard;
 	players[g->t].cardNo++;
 
-	players[g->t].points += getPoint(nextCard);
-	if (getPoint(nextCard) == 11)
+	players[g->t].points += getPoint(g, nextCard);
+	if (getPoint(g, nextCard) == 11)
 	{
 		players[g->t].ace = 1;
 	}
-	printf("\nYou got the");
-	printCard(nextCard);
+	if (g->t == 0)
+	{
+		printf("\nDealer got the ");
+		printCard(g, nextCard);
+	}
+	else {
+	printf("\nYou got the ");
+	printCard(g, nextCard);
+	}
 	if (players[g->t].ace == 1)
 	{
 		players[g->t].points -= 10;
 		printf("\nYou choose to use your Ace as 1, you are now on %d points", players[g->t].points);
 		players[g->t].ace = 0;
 	}
-	else {
-		printf("\nYou are now on %d points", players[g->t].points);
-	}
+
 	checkForBlackJack(g, players);
 }
 
-int calculatePoints(player players[], int j)
+int calculatePoints(Game *g, player players[], int j)
 {
 	int points = 0;
 	int pointTotal = 0;
@@ -336,7 +358,7 @@ int calculatePoints(player players[], int j)
 	
 	for (int i = 0; i < 2; i++)
 	{
-		face = getFace(players[j].h[i]);
+		face = getFace(g, players[j].h[i]);
 		switch (face)
 		{
 			case 0:
@@ -385,14 +407,14 @@ int calculatePoints(player players[], int j)
 	return pointTotal;
 }
 
-int getPoint(int card)
+int getPoint(Game *g, int card)
 {
 	int points = 0;
 	int face;
 
 	for (int i = 0; i < 2; i++)
 	{
-		face = getFace(card);
+		face = getFace(g, card);
 		switch (face)
 		{
 		case 0:
@@ -439,7 +461,7 @@ int getPoint(int card)
 	return points;
 }
 
-void checkForBlackJack(game *g, player players[])
+void checkForBlackJack(Game *g, player players[])
 {
 	if (players[g->t].points == 21)
 	{
@@ -465,7 +487,7 @@ void checkForBlackJack(game *g, player players[])
 	}
 }
 
-void winners(game *g, player players[])
+void winners(Game *g, player players[])
 {
 	int points;
 	int highestPoints;
@@ -473,11 +495,15 @@ void winners(game *g, player players[])
 	int choice;
 	int bjCount = 0;
 
-	if (players[0].points == 21)
+	printf("\n\n\n\n\n\n============================================\n");
+	printf("=                  Winner                  =\n");
+	printf("============================================");
+
+	if (players[0].points == 21 && players[0].cardNo == 2)
 	{
 		for (int i = 1; i <= g->np; i++)
 		{
-			if (players[i].points == 21)
+			if (players[i].points == 21 && players[i].cardNo ==  2)
 			{
 				printf("\nPlayer %d also has a BlackJack", i);
 				bjCount++;
@@ -489,10 +515,10 @@ void winners(game *g, player players[])
 		}
 		else
 		{
-			printf("\nDealer wins with a");
-			printCard(players[0].h[0]);
-			printf(" and a");
-			printCard(players[0].h[1]);
+			printf("\nDealer wins with a ");
+			printCard(g, players[0].h[0]);
+			printf(" and a ");
+			printCard(g, players[0].h[1]);
 			printf("\n");
 		}
 	}
@@ -551,9 +577,9 @@ void winners(game *g, player players[])
 	}
 	do
 	{
-		printf("\n\nWould you like to play another round?");
+		printf("\n\n\n\nWould you like to play another round?");
 		printf("\n1. Yes");
-		printf("\n2. No");
+		printf("\n2. Save and Exit");
 		printf("\nOption: ");
 		scanf("%d", &choice);
 	} while (choice != 1 && choice != 2);
@@ -565,26 +591,30 @@ void winners(game *g, player players[])
 	}
 	else
 	{
-		printf("\n\nExiting Game...");
+		printf("\n\Saving Game...");
+		saveGame(g, players);
+		//exit(0);
+
 	}
 }
 
-void clear(game *g)
+/*void clear(Game g)
 {
-	free(g->d);
+	free(g.d);
 	free(g);
-}
+}*/
 
-void saveGame(game *g, player players[])
+void saveGame(Game *g, player players[])
 {
-	fptr = fopen("save.txt", "w");
+	FILE *fptr;
 
-	if (fptr == NULL)
+	if ((fptr = fopen("save.txt", "w")) == NULL)
 	{
 		printf("Error opening file!\n");
 	}
 	else
 	{
+		fptr = fopen("save.txt", "w");
 		fprintf(fptr, "%d %d %d %d\n", g->nd, g->np, g->r, g->t);
 		for (int i = 0; i < DECKSIZE * g->nd; i++)
 		{
@@ -602,9 +632,9 @@ void saveGame(game *g, player players[])
 	}
 }
 
-void loadGame(game *g, player players[])
+void loadGame(Game *g, player players[])
 {
-	fptr = fopen("save.txt", "r");
+	FILE *fptr = fopen("save.txt", "r");
 
 	if (fptr == NULL) {
 		printf("\nError opening file!\n");
@@ -625,5 +655,4 @@ void loadGame(game *g, player players[])
 		}
 	}
 	fclose(fptr);
-	playGame(g, players);
 }
